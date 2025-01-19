@@ -197,7 +197,7 @@ PokemonNode *searchPokemonBFS(PokemonNode *root, int id);//DONE>>>>>>>>>>>>>>>>>
  * @return updated BST root
  * Why we made it: We handle special cases of a BST remove (0,1,2 children).
  */
-void removeNodeBST(PokemonNode *root, int id);//Loading.........................................................part 2 - 3
+PokemonNode *removeNodeBST(PokemonNode *root, int id);//Loading.........................................................part 2 - 3
 
 /**
  * @brief Combine BFS search + BST removal to remove Pokemon by ID.
@@ -208,7 +208,8 @@ void removeNodeBST(PokemonNode *root, int id);//Loading.........................
  */
 PokemonNode *removePokemonByID(PokemonNode *root, int id);//Loading.....................................................part 2 - 3
 //
-PokemonNode* findMin(PokemonNode* root);//DONE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>part 2 - 3
+PokemonNode *findMin(PokemonNode* root);//DONE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>part 2 - 3
+PokemonNode *findParent(PokemonNode* root, int id);//DONE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>part 2 - 3
 /* ------------------------------------------------------------
    4) Generic BST Traversals (Function Pointers)
    ------------------------------------------------------------ */

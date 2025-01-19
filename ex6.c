@@ -375,7 +375,7 @@ PokemonNode *createPokemonNode(PokemonData *data,int choice)
     node->left = NULL;
     node->right = NULL;
     data->id = pokedex[choice].id;
-    data->name = pokedex[choice].name;
+    data->name = strdup(pokedex[choice].name);
     data->TYPE = pokedex[choice].TYPE;
     data->hp = pokedex[choice].hp;
     data->attack = pokedex[choice].attack;
@@ -438,6 +438,13 @@ void addPokemon(OwnerNode *owner)
         PokemonNode *newNode = createPokemonNode(data,pokemonID);
         if(insertPokemonNode(owner->pokedexRoot,newNode)!=NULL)
             printf("Pokemon %s (ID %d) added.\n",newNode->data->name,newNode->data->id);
+        if (insertPokemonNode(owner->pokedexRoot, newNode) == NULL)
+        {
+            printf("Failed to insert Pokemon. Releasing memory.\n");
+            free(newNode->data->name);
+            free(newNode->data);
+            free(newNode);
+        }
     }
 }
 //
@@ -531,98 +538,140 @@ void displayAlphabetical(PokemonNode *root)
 // --------------------------------------------------------------
 void freePokemonNode(PokemonNode *node)
 {
-    if (node)
-    {
-        free(node->data->name);
-        free(node->data);
-        free(node);
+
+    if (node == NULL) {
+        // If there isn't data to free get out of the func
+        return;
     }
+    // Check if the node's data is NULL
+    if (node->data == NULL) {
+        free(node);
+        return;
+    }
+    // First, free the name only if it's not NULL
+    if (node->data->name != NULL) {
+        free(node->data->name);
+    }
+    // Then, free the struct of data
+    free(node->data);
+    // Finally, free the node itself
+    free(node);
 }
 void freePokemon(OwnerNode *owner)
 {
-    if (owner->pokedexRoot == NULL)
-    {
+    if (owner->pokedexRoot == NULL) {
         printf("No Pokemon to release.\n");
         return;
     }
+
     int id = readIntSafe("Enter Pokemon ID to release: ");
-    PokemonNode *removed = removePokemonByID(owner->pokedexRoot,id);
-    if(removed != NULL)
-    printf("Removing Pokemon %s (ID %d).\n", removed->data->name, removed->data->id);
+    owner->pokedexRoot = removePokemonByID(owner->pokedexRoot, id);
 }
 //
-void removeNodeBST(PokemonNode *root, const int id)
-{
-    if (root->left == NULL && root->right == NULL)
-    {
-        PokemonNode *temp = root->right;
-        freePokemonNode(root);
-        return;
+PokemonNode *removeNodeBST(PokemonNode *root, const int id)
+{ if (root == NULL) {
+        printf("[DEBUG] Node with ID %d not found (root is NULL).\n", id);
+        return NULL;
     }
-    if (root->left != NULL && root->right != NULL)
+
+    // חיפוש הצומת למחיקה
+    if (id < root->data->id)
     {
+        printf("[DEBUG] Traversing left: looking for ID %d in left subtree.\n", id);
+        root->left = removeNodeBST(root->left, id);
+    } else if (id > root->data->id) {
+        printf("[DEBUG] Traversing right: looking for ID %d in right subtree.\n", id);
+        root->right = removeNodeBST(root->right, id);
+    } else {
+        // הצומת נמצא
+        printf("[DEBUG] Node with ID %d found.\n", id);
+
+        // מקרה 1: הצומת הוא עלה
+        if (root->left == NULL && root->right == NULL) {
+            printf("[DEBUG] Node with ID %d is a leaf. Deleting node.\n", id);
+            freePokemonNode(root);
+            return NULL;
+        }
+
+        // מקרה 2: הצומת עם ילד ימין בלבד
+        if (root->left == NULL) {
+            printf("[DEBUG] Node with ID %d has only a right child. Promoting right child.\n", id);
+            PokemonNode *temp = root->right;
+            free(root->data->name);
+            printf("[DEBUG] Freed name.\n");
+            free(root->data);
+            printf("[DEBUG] Freed data.\n");
+            free(root);
+            printf("[DEBUG] Freed node.\n");
+            return temp;
+        }
+
+        // מקרה 2: הצומת עם ילד שמאל בלבד
+        if (root->right == NULL) {
+            printf("[DEBUG] Node with ID %d has only a left child. Promoting left child.\n", id);
+            PokemonNode *temp = root->left;
+            free(root->data->name);
+            printf("[DEBUG] Freed name.\n");
+            free(root->data);
+            printf("[DEBUG] Freed data.\n");
+            free(root);
+            printf("[DEBUG] Freed node.\n");
+            return temp;
+        }
+
+        // מקרה 3: הצומת עם שני ילדים
+        printf("[DEBUG] Node with ID %d has two children. Replacing with inorder successor.\n", id);
         PokemonNode *temp = findMin(root->right);
+        printf("[DEBUG] Inorder successor found: ID %d, Name: %s.\n", temp->data->id, temp->data->name);
+
+        // החלף את הנתונים של הצומת הנוכחי בנתוני הצומת המינימלי
         root->data->id = temp->data->id;
         free(root->data->name);
+        printf("[DEBUG] Freed name of the current node.\n");
         root->data->name = strdup(temp->data->name);
-        root->data->TYPE = temp->data->TYPE;
         root->data->hp = temp->data->hp;
         root->data->attack = temp->data->attack;
-        root->data->CAN_EVOLVE = temp->data->CAN_EVOLVE;
-        removeNodeBST(temp, temp->data->id);
-        return;
+
+        // מחק את הצומת המינימלי מתת-העץ הימני
+        printf("[DEBUG] Deleting inorder successor with ID %d.\n", temp->data->id);
+        root->right = removeNodeBST(root->right, temp->data->id);
     }
-    if (root->left != NULL)
-    {
-        PokemonNode *temp = root->left;
-        root->data->id = temp->data->id;
-        free(root->data->name);
-        root->data->name = strdup(temp->data->name);
-        root->data->TYPE = temp->data->TYPE;
-        root->data->hp = temp->data->hp;
-        root->data->attack = temp->data->attack;
-        root->data->CAN_EVOLVE = temp->data->CAN_EVOLVE;
-        root->left = temp->left;
-        freePokemonNode(temp);
-        return;
+
+    return root;}
+//
+PokemonNode* findMin(PokemonNode* root) {
+    while (root && root->left != NULL) {
+        root = root->left;
     }
-   if (root->right != NULL)
-   {
-       PokemonNode *temp = root->right;
-       root->data->id = temp->data->id;
-       free(root->data->name);
-       root->data->name = strdup(temp->data->name);
-       root->data->TYPE = temp->data->TYPE;
-       root->data->hp = temp->data->hp;
-       root->data->attack = temp->data->attack;
-       root->data->CAN_EVOLVE = temp->data->CAN_EVOLVE;
-       root->right = temp->right;
-       freePokemonNode(temp);
-       return;
-   }
+    return root;
+}
+//
+PokemonNode *findParent(PokemonNode* root, int id)
+{
+    if (root == NULL || (root->left == NULL && root->right == NULL))
+        return NULL;
+    if ((root->left != NULL && root->left->data->id == id) || (root->right != NULL && root->right->data->id == id))
+        return root;
+    if (id < root->data->id)
+        return findParent(root->left, id);
+    return findParent(root->right, id);
 }
 //
 PokemonNode *removePokemonByID(PokemonNode *root, int id)
 {
-    PokemonNode *wanted = searchPokemonBFS(root,id);
-    if (wanted != NULL)
-    {
-         removeNodeBST(wanted, id);
-        return wanted;
-    }
-    else
-    {
-        printf("No Pokemon with ID %d found.\n",id);
+    if (!root) {
+        printf("No Pokemon in the Pokedex.\n");
         return NULL;
     }
-}
-PokemonNode* findMin(PokemonNode* root)
-{
-    while (root && root->left != NULL)
-    {
-        root = root->left;
+
+    PokemonNode *newRoot = removeNodeBST(root, id);
+    if (newRoot == NULL && searchPokemonBFS(root, id)) {
+        printf("Error removing Pokemon with ID %d.\n", id);
+    } else {
+        printf("Pokemon with ID %d successfully removed.\n", id);
     }
-    return root;
+
+    return newRoot;
 }
 // --------------------------------------------------------------
 // 4) POKEMON FIGHT
