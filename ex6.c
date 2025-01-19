@@ -202,11 +202,79 @@ void printPokemonNode(PokemonNode *node)
            node->data->hp,
            node->data->attack,
            (node->data->CAN_EVOLVE == CAN_EVOLVE) ? "Yes" : "No");
+}/* ------------------------------------------------------------
+   QUEUE FUNCTIONS
+   ------------------------------------------------------------ */
+PokemonQueue* createQueue()
+{
+    PokemonQueue* q = (PokemonQueue*)malloc(sizeof(PokemonQueue));
+    q->front = NULL;
+    q->rear = NULL;
+    return q;
+}
+int isEmpty(PokemonQueue* q)
+{
+    if(q->front == NULL)
+        return 1;
+    return 0;
+}
+//
+void enqueue(PokemonQueue* q, PokemonNode* treeNode)
+{
+    NodeQueue* newQueueNode = (NodeQueue*)malloc(sizeof(NodeQueue));
+    newQueueNode->treeNode = treeNode;
+    newQueueNode->next = NULL;
+    if (q->rear == NULL)
+    {
+        q->front = newQueueNode;
+        q->rear = newQueueNode;
+    }
+    else
+    {
+        q->rear->next = newQueueNode;
+        q->rear = newQueueNode;
+    }
+}
+//
+PokemonNode* dequeue(PokemonQueue* q)
+{
+    if (isEmpty(q))
+    {
+        return NULL;
+    }
+    NodeQueue* temp = q->front;
+    PokemonNode* treeNode = temp->treeNode;
+    q->front = q->front->next;
+    if (q->front == NULL)
+    {
+        q->rear = NULL;
+    }
+    free(temp);
+    return treeNode;
 }
 // --------------------------------------------------------------
 // GENERIC FUNCTIONS
 // --------------------------------------------------------------
-void BFSGeneric(PokemonNode *root, VisitNodeFunc visit){}
+void BFSGeneric(PokemonNode *root, VisitNodeFunc visit)
+{
+    if (root == NULL) return;
+    PokemonQueue* q = createQueue();
+    enqueue(q, root);
+    while (!isEmpty(q))
+    {
+        PokemonNode* currentNode = dequeue(q);
+        visit(currentNode);
+        if (currentNode->left != NULL)
+        {
+            enqueue(q, currentNode->left);
+        }
+        if (currentNode->right != NULL)
+        {
+            enqueue(q, currentNode->right);
+        }
+    }
+    free(q);
+}
 //
 void preOrderGeneric(PokemonNode* root, VisitNodeFunc visit)
 {
@@ -231,6 +299,28 @@ void inOrderGeneric(PokemonNode *root, VisitNodeFunc visit)
     visit(root);
     preOrderGeneric(root->right, visit);
 }
+//
+/*
+PokemonQueue *alphabeticalGeneric(PokemonNode *root, VisitNodeFunc visit)
+{
+    if (root == NULL) return;
+    PokemonQueue* q = createQueue();
+    enqueue(q, root);
+    while (!isEmpty(q))
+    {
+        PokemonNode* currentNode = dequeue(q);
+        if (currentNode->left != NULL)
+        {
+            enqueue(q, currentNode->left);
+        }
+        if (currentNode->right != NULL)
+        {
+            enqueue(q, currentNode->right);
+        }
+    }
+    free(q);
+}
+*/
 // --------------------------------------------------------------
 // PART ONE
 // --------------------------------------------------------------
@@ -255,7 +345,17 @@ OwnerNode *createOwner(char *ownerName, PokemonNode *starter)
         OwnerNode *temp = ownerHead;
         while (temp->next != NULL)
         {
+            if(temp->ownerName == ownerName)//NOT WORKING---------------------------------------------------------------
+            {
+                printf("Error: duplicate name.\n");
+                return NULL;
+            }
             temp = temp->next;
+        }
+        if(temp->ownerName == ownerName)
+        {
+            printf("Error: duplicate name.\n");
+            return NULL;
         }
         temp->next = newNode;
         newNode->prev = temp;
@@ -271,6 +371,9 @@ PokemonNode *createPokemonNode(PokemonData *data,int choice)
         printf("Error: malloc failed\n");
         return NULL;
     }
+    choice--;
+    node->left = NULL;
+    node->right = NULL;
     data->id = pokedex[choice].id;
     data->name = pokedex[choice].name;
     data->TYPE = pokedex[choice].TYPE;
@@ -302,7 +405,7 @@ void openPokedexMenu()
         printf("Error: malloc failed\n");
         return;
     }
-    PokemonNode *root = createPokemonNode(data,rootID-1);
+    PokemonNode *root = createPokemonNode(data,rootID);
     OwnerNode *newOwner = createOwner(name,root);
     if (!newOwner)
     {
@@ -337,12 +440,10 @@ void addPokemon(OwnerNode *owner)
             printf("Pokemon %s (ID %d) added.\n",newNode->data->name,newNode->data->id);
     }
 }
+//
 PokemonNode *insertPokemonNode(PokemonNode *root, PokemonNode *newNode)
 {
-    if (root == NULL)
-    {
-        return NULL;
-    }
+    if (root == NULL) return NULL;
     if (root->data->id > newNode->data->id)
     {
         if (root->left != NULL)
@@ -350,54 +451,46 @@ PokemonNode *insertPokemonNode(PokemonNode *root, PokemonNode *newNode)
         root->left = newNode;
         if(root->left == NULL)
             return NULL;
-        return root;
     }
     if (root->data->id < newNode->data->id)
     {
         if (root->right != NULL)
             return insertPokemonNode(root->right, newNode);
         root->right = newNode;
-        if(root->right == NULL)
-            return NULL;
-        return root;
+        if(root->right == NULL) return NULL;
     }
+    return root;
 }
-PokemonNode *searchPokemonBFS(PokemonNode *root, int id)//FIX IT TO BFS//////////////////////////////////
+//
+PokemonNode *searchPokemonBFS(PokemonNode *root, int id)
 {
-    if (root == NULL)
-        return NULL;
-    if (root->data->id == id)
-        return root;
-    if (root->data->id > id)
-        return searchPokemonBFS(root->left, id);
-    if (root->data->id < id)
-        return searchPokemonBFS(root->right, id);
+    if (root == NULL) return NULL;
+    PokemonQueue* q = createQueue();
+    enqueue(q, root);
+    while (!isEmpty(q))
+    {
+        PokemonNode* currentNode = dequeue(q);
+        if (currentNode->data->id == id)
+        {
+            free(q);
+            return currentNode;
+        }
+        if (currentNode->left != NULL)
+            enqueue(q, currentNode->left);
+        if (currentNode->right != NULL)
+            enqueue(q, currentNode->right);
+    }
+    free(q);
+    return NULL;
 }
 // --------------------------------------------------------------
 // 2) DISPLAY POKEDEX
 // --------------------------------------------------------------
 void displayBFS(PokemonNode *root)
 {
-    char *type = (char*)malloc(sizeof(char) * 20);
-    if(!type)
-    {
-        printf("Error: malloc failed\n");
-        return;
-    }
-    *type = pokedex[root->data->id-1].TYPE;
-    char *canEvolve = (char*)malloc(sizeof(char) * 20);
-    if(!canEvolve)
-    {
-        printf("Error: malloc failed\n");
-        free(type);
-        return;
-    }
-    *canEvolve = pokedex[root->data->id-1].TYPE;
-    printf("ID: %d, Name: %s, Type: %s, HP: %d, Attack: %d, Can Evolve: %s\n",root->data->id,root->data->name,
-        type,root->data->hp,root->data->attack,canEvolve);
-    free(type);
-    free(canEvolve);
+    BFSGeneric(root,printPokemonNode);
 }
+//
 void preOrderTraversal(PokemonNode *root)
 {
     preOrderGeneric(root,printPokemonNode);
@@ -412,7 +505,148 @@ void postOrderTraversal(PokemonNode *root)
 {
     postOrderGeneric(root,printPokemonNode);
 }
-void displayAlphabetical(PokemonNode *root){}
+//
+void displayAlphabetical(PokemonNode *root)
+{
+    if (root == NULL) return;
+    PokemonQueue* q = createQueue();
+    enqueue(q, root);
+    while (!isEmpty(q))
+    {
+        PokemonNode* currentNode = dequeue(q);
+        //visit(currentNode);
+        if (currentNode->left != NULL)
+        {
+            enqueue(q, currentNode->left);
+        }
+        if (currentNode->right != NULL)
+        {
+            enqueue(q, currentNode->right);
+        }
+    }
+    free(q);
+}
+// --------------------------------------------------------------
+// 3) RELEASE POKEMON BY ID
+// --------------------------------------------------------------
+void freePokemonNode(PokemonNode *node)
+{
+    if (node)
+    {
+        free(node->data->name);
+        free(node->data);
+        free(node);
+    }
+}
+void freePokemon(OwnerNode *owner)
+{
+    if (owner->pokedexRoot == NULL)
+    {
+        printf("No Pokemon to release.\n");
+        return;
+    }
+    int id = readIntSafe("Enter Pokemon ID to release: ");
+    PokemonNode *removed = removePokemonByID(owner->pokedexRoot,id);
+    if(removed != NULL)
+    printf("Removing Pokemon %s (ID %d).\n", removed->data->name, removed->data->id);
+}
+//
+void removeNodeBST(PokemonNode *root, const int id)
+{
+    if (root->left == NULL && root->right == NULL)
+    {
+        PokemonNode *temp = root->right;
+        freePokemonNode(root);
+        return;
+    }
+    if (root->left != NULL && root->right != NULL)
+    {
+        PokemonNode *temp = findMin(root->right);
+        root->data->id = temp->data->id;
+        free(root->data->name);
+        root->data->name = strdup(temp->data->name);
+        root->data->TYPE = temp->data->TYPE;
+        root->data->hp = temp->data->hp;
+        root->data->attack = temp->data->attack;
+        root->data->CAN_EVOLVE = temp->data->CAN_EVOLVE;
+        removeNodeBST(temp, temp->data->id);
+        return;
+    }
+    if (root->left != NULL)
+    {
+        PokemonNode *temp = root->left;
+        root->data->id = temp->data->id;
+        free(root->data->name);
+        root->data->name = strdup(temp->data->name);
+        root->data->TYPE = temp->data->TYPE;
+        root->data->hp = temp->data->hp;
+        root->data->attack = temp->data->attack;
+        root->data->CAN_EVOLVE = temp->data->CAN_EVOLVE;
+        root->left = temp->left;
+        freePokemonNode(temp);
+        return;
+    }
+   if (root->right != NULL)
+   {
+       PokemonNode *temp = root->right;
+       root->data->id = temp->data->id;
+       free(root->data->name);
+       root->data->name = strdup(temp->data->name);
+       root->data->TYPE = temp->data->TYPE;
+       root->data->hp = temp->data->hp;
+       root->data->attack = temp->data->attack;
+       root->data->CAN_EVOLVE = temp->data->CAN_EVOLVE;
+       root->right = temp->right;
+       freePokemonNode(temp);
+       return;
+   }
+}
+//
+PokemonNode *removePokemonByID(PokemonNode *root, int id)
+{
+    PokemonNode *wanted = searchPokemonBFS(root,id);
+    if (wanted != NULL)
+    {
+         removeNodeBST(wanted, id);
+        return wanted;
+    }
+    else
+    {
+        printf("No Pokemon with ID %d found.\n",id);
+        return NULL;
+    }
+}
+PokemonNode* findMin(PokemonNode* root)
+{
+    while (root && root->left != NULL)
+    {
+        root = root->left;
+    }
+    return root;
+}
+// --------------------------------------------------------------
+// 4) POKEMON FIGHT
+// --------------------------------------------------------------
+void pokemonFight(OwnerNode *owner)
+{
+    PokemonNode *root = owner->pokedexRoot;
+    int first = readIntSafe("Enter ID of the first Pokemon: ");
+    int second = readIntSafe("Enter ID of the second Pokemon: ");
+    PokemonNode *fighter1 = searchPokemonBFS(root,first);
+    PokemonNode *fighter2 = searchPokemonBFS(root,second);
+    if(fighter1 == NULL || fighter2 == NULL)
+    {
+        printf("One or both Pokemon IDs not found.\n");
+        return;
+    }
+    const double power1 = fighter1->data->attack*1.5 + fighter1->data->hp*1.2;
+    const double power2 = fighter2->data->attack*1.5 + fighter2->data->hp*1.2;
+    printf("Pokemon 1: %s (Score = %.2f)\n",fighter1->data->name,power1);
+    printf("Pokemon 2: %s (Score = %.2f)\n",fighter2->data->name,power2);
+    if (power1 > power2) printf("%s wins!\n" ,fighter1->data->name);
+    if (power1 < power2) printf("%s wins!\n" ,fighter2->data->name);
+    if (power1 == power2) printf("It’s a tie!\n");
+}
 // --------------------------------------------------------------
 // Display Menu
 // --------------------------------------------------------------
@@ -436,7 +670,7 @@ void displayMenu(OwnerNode *owner)
     switch (choice)
     {
     case 1:
-        //displayBFS(owner->pokedexRoot);
+        displayBFS(owner->pokedexRoot);
         break;
     case 2:
         preOrderTraversal(owner->pokedexRoot);
@@ -493,13 +727,13 @@ void enterExistingPokedexMenu()
             addPokemon(currentOwner);
             break;
         case 2:
-            //displayMenu(cur);
+            displayMenu(currentOwner);
             break;
         case 3:
-            //freePokemon(cur);
+            freePokemon(currentOwner);
             break;
         case 4:
-            //pokemonFight(cur);
+            pokemonFight(currentOwner);
             break;
         case 5:
             //evolvePokemon(cur);

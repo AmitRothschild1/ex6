@@ -60,7 +60,30 @@ typedef struct OwnerNode
 } OwnerNode;
 // Global head pointer for the linked list of owners
 OwnerNode *ownerHead = NULL;
+/* ------------------------------------------------------------
+   POKEMON QUEUE STRUCTS
+   ------------------------------------------------------------ */
+typedef struct NodeQueue
+{
+ PokemonNode* treeNode;
+ struct NodeQueue* next;
+} NodeQueue;
 
+typedef struct PokemonQueue
+{
+ NodeQueue* front;
+ NodeQueue* rear;
+} PokemonQueue;
+/* ------------------------------------------------------------
+   QUEUE FUNCTIONS
+   ------------------------------------------------------------ */
+PokemonQueue* createQueue();
+//
+int isEmpty(PokemonQueue* q);
+//
+void enqueue(PokemonQueue* q, PokemonNode* treeNode);
+//
+PokemonNode* dequeue(PokemonQueue* q);
 /* ------------------------------------------------------------
    1) Safe Input + Utility
    ------------------------------------------------------------ */
@@ -70,7 +93,7 @@ OwnerNode *ownerHead = NULL;
  * @param str modifiable string
  * Why we made it: We must handle CR/LF or random spaces in user input.
  */
-void trimWhitespace(char *str);
+void trimWhitespace(char *str);//DONE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 /**
  * @brief C99-friendly strdup replacement.
@@ -78,7 +101,7 @@ void trimWhitespace(char *str);
  * @return newly allocated copy of src
  * Why we made it: Some old systems lack strdup; we do it ourselves.
  */
-char *myStrdup(const char *src);
+char *myStrdup(const char *src);//DONE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 /**
  * @brief Read an integer safely, re-prompt if invalid.
@@ -86,14 +109,14 @@ char *myStrdup(const char *src);
  * @return valid integer from user
  * Why we made it: We want robust menu/ID input handling.
  */
-int readIntSafe(const char *prompt);
+int readIntSafe(const char *prompt);//DONE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 /**
  * @brief Read a line from stdin, store in malloc'd buffer, trim whitespace.
  * @return pointer to the newly allocated string (caller frees)
  * Why we made it: We need flexible name input that handles CR/LF etc.
  */
-char *getDynamicInput(void);
+char *getDynamicInput(void);//DONE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 /**
  * @brief Return a string for a given PokemonType enum.
@@ -101,7 +124,7 @@ char *getDynamicInput(void);
  * @return string like "GRASS", "FIRE", etc.
  * Why we made it: So we can print readable type names.
  */
-const char *getTypeName(PokemonType type);
+const char *getTypeName(PokemonType type);//DONE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 /* ------------------------------------------------------------
    2) Creating & Freeing Nodes
@@ -113,7 +136,7 @@ const char *getTypeName(PokemonType type);
  * @return newly allocated PokemonNode*
  * Why we made it: We need a standard way to allocate BST nodes.
  */
-PokemonNode *createPokemonNode(PokemonData *data,int choice); //DONE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!part 1
+PokemonNode *createPokemonNode(PokemonData *data,int choice); //DONE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>part 1
 
 /**
  * @brief Create an OwnerNode for the circular owners list.
@@ -122,14 +145,14 @@ PokemonNode *createPokemonNode(PokemonData *data,int choice); //DONE!!!!!!!!!!!!
  * @return newly allocated OwnerNode*
  * Why we made it: Each user is represented as an OwnerNode.
  */
-OwnerNode *createOwner(char *ownerName, PokemonNode *starter); //DONE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!part 1
+OwnerNode *createOwner(char *ownerName, PokemonNode *starter); //DONE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>part 1
 
 /**
  * @brief Free one PokemonNode (including name).
  * @param node pointer to node
  * Why we made it: Avoid memory leaks for single nodes.
  */
-void freePokemonNode(PokemonNode *node);
+void freePokemonNode(PokemonNode *node);//DONE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>part 2 - 3
 
 /**
  * @brief Recursively free a BST of PokemonNodes.
@@ -144,7 +167,7 @@ void freePokemonTree(PokemonNode *root);
  * Why we made it: Deleting an owner also frees their Pokedex & name.
  */
 void freeOwnerNode(OwnerNode *owner);
-
+//
 /* ------------------------------------------------------------
    3) BST Insert, Search, Remove
    ------------------------------------------------------------ */
@@ -156,7 +179,7 @@ void freeOwnerNode(OwnerNode *owner);
  * @return updated BST root
  * Why we made it: Standard BST insertion ignoring duplicates.
  */
-PokemonNode *insertPokemonNode(PokemonNode *root, PokemonNode *newNode);//Loading.......................................part 2 - 1
+PokemonNode *insertPokemonNode(PokemonNode *root, PokemonNode *newNode);//DONE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>part 2 - 1
 
 /**
  * @brief BFS search for a Pokemon by ID in the BST.
@@ -165,7 +188,7 @@ PokemonNode *insertPokemonNode(PokemonNode *root, PokemonNode *newNode);//Loadin
  * @return pointer to found node or NULL
  * Why we made it: BFS ensures we find nodes even in an unbalanced tree.
  */
-PokemonNode *searchPokemonBFS(PokemonNode *root, int id);//Loading......................................................part 2 - 1
+PokemonNode *searchPokemonBFS(PokemonNode *root, int id);//DONE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>part 2 - 1
 
 /**
  * @brief Remove node from BST by ID if found (BST removal logic).
@@ -174,7 +197,7 @@ PokemonNode *searchPokemonBFS(PokemonNode *root, int id);//Loading..............
  * @return updated BST root
  * Why we made it: We handle special cases of a BST remove (0,1,2 children).
  */
-PokemonNode *removeNodeBST(PokemonNode *root, int id);
+void removeNodeBST(PokemonNode *root, int id);//Loading.........................................................part 2 - 3
 
 /**
  * @brief Combine BFS search + BST removal to remove Pokemon by ID.
@@ -183,8 +206,9 @@ PokemonNode *removeNodeBST(PokemonNode *root, int id);
  * @return updated BST root
  * Why we made it: BFS confirms existence, then removeNodeBST does the removal.
  */
-PokemonNode *removePokemonByID(PokemonNode *root, int id);
-
+PokemonNode *removePokemonByID(PokemonNode *root, int id);//Loading.....................................................part 2 - 3
+//
+PokemonNode* findMin(PokemonNode* root);//DONE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>part 2 - 3
 /* ------------------------------------------------------------
    4) Generic BST Traversals (Function Pointers)
    ------------------------------------------------------------ */
@@ -199,7 +223,7 @@ typedef void (*VisitNodeFunc)(PokemonNode *);
  * @param visit function pointer for what to do with each node
  * Why we made it: BFS plus function pointers => flexible traversal.
  */
-void BFSGeneric(PokemonNode *root, VisitNodeFunc visit);//Loading.......................................................
+void BFSGeneric(PokemonNode *root, VisitNodeFunc visit);//DONE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>part 2 - 2
 
 /**
  * @brief A generic pre-order traversal (Root-Left-Right).
@@ -207,7 +231,7 @@ void BFSGeneric(PokemonNode *root, VisitNodeFunc visit);//Loading...............
  * @param visit function pointer
  * Why we made it: Another demonstration of function-pointer-based traversal.
  */
-void preOrderGeneric(PokemonNode *root, VisitNodeFunc visit);//DONE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+void preOrderGeneric(PokemonNode *root, VisitNodeFunc visit);//DONE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>part 2 - 2
 
 /**
  * @brief A generic in-order traversal (Left-Root-Right).
@@ -215,7 +239,7 @@ void preOrderGeneric(PokemonNode *root, VisitNodeFunc visit);//DONE>>>>>>>>>>>>>
  * @param visit function pointer
  * Why we made it: Great for seeing sorted order if BST is sorted by ID.
  */
-void inOrderGeneric(PokemonNode *root, VisitNodeFunc visit);//DONE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+void inOrderGeneric(PokemonNode *root, VisitNodeFunc visit);//DONE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>part 2 - 2
 
 /**
  * @brief A generic post-order traversal (Left-Right-Root).
@@ -223,15 +247,16 @@ void inOrderGeneric(PokemonNode *root, VisitNodeFunc visit);//DONE>>>>>>>>>>>>>>
  * @param visit function pointer
  * Why we made it: Another standard traversal pattern.
  */
-void postOrderGeneric(PokemonNode *root, VisitNodeFunc visit);//DONE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+void postOrderGeneric(PokemonNode *root, VisitNodeFunc visit);//DONE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>part 2 - 2
 
 /**
  * @brief Print one PokemonNode’s data: ID, Name, Type, HP, Attack, Evolve?
  * @param node pointer to the node
  * Why we made it: We can pass this to BFSGeneric or others to quickly print.
  */
-void printPokemonNode(PokemonNode *node);
-
+void printPokemonNode(PokemonNode *node);//DONE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>part 2 - 2
+//
+void alphabeticalGeneric(PokemonNode *root, VisitNodeFunc visit);//Loading..............................................part 2 - 2
 /* ------------------------------------------------------------
    5) Display Methods (BFS, Pre, In, Post, Alphabetical)
    ------------------------------------------------------------ */
@@ -295,21 +320,21 @@ void displayBFS(PokemonNode *root);//Loading....................................
  * @param root BST root
  * Why we made it: Another standard traversal for demonstration.
  */
-void preOrderTraversal(PokemonNode *root);//Loading.....................................................................part 2 - 2
+void preOrderTraversal(PokemonNode *root);//DONE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>part 2 - 2
 
 /**
  * @brief In-order user-friendly display (Left->Root->Right).
  * @param root BST root
  * Why we made it: Good for sorted output by ID if the tree is a BST.
  */
-void inOrderTraversal(PokemonNode *root);//Loading......................................................................part 2 - 2
+void inOrderTraversal(PokemonNode *root);//DONE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>part 2 - 2
 
 /**
  * @brief Post-order user-friendly display (Left->Right->Root).
  * @param root BST root
  * Why we made it: Another standard traversal pattern.
  */
-void postOrderTraversal(PokemonNode *root);//Loading....................................................................part 2 - 2
+void postOrderTraversal(PokemonNode *root);//DONE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>part 2 - 2
 
 /* ------------------------------------------------------------
    6) Pokemon-Specific
@@ -320,7 +345,7 @@ void postOrderTraversal(PokemonNode *root);//Loading............................
  * @param owner pointer to the Owner
  * Why we made it: Fun demonstration of BFS and custom formula for battles.
  */
-void pokemonFight(OwnerNode *owner);
+void pokemonFight(OwnerNode *owner);//Loading...........................................................................part 2 - 4
 
 /**
  * @brief Evolve a Pokemon (ID -> ID+1) if allowed.
@@ -341,7 +366,7 @@ void addPokemon(OwnerNode *owner);//LOADING.....................................
  * @param owner pointer to the Owner
  * Why we made it: Another user function for releasing a Pokemon.
  */
-void freePokemon(OwnerNode *owner);
+void freePokemon(OwnerNode *owner);//Loading............................................................................part 2 - 3
 
 /* ------------------------------------------------------------
    7) Display Menu for a Pokedex
@@ -412,7 +437,7 @@ void enterExistingPokedexMenu(void);//Loading...................................
  * @brief Creates a new Pokedex (prompt for name, check uniqueness, choose starter).
  * Why we made it: The main entry for building a brand-new Pokedex.
  */
-void openPokedexMenu();//DONE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+void openPokedexMenu();//DONE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>part 1
 
 /**
  * @brief Delete an entire Pokedex (owner) from the list.
