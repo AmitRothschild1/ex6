@@ -197,7 +197,7 @@ PokemonNode *searchPokemonBFS(PokemonNode *root, int id);//DONE>>>>>>>>>>>>>>>>>
  * @return updated BST root
  * Why we made it: We handle special cases of a BST remove (0,1,2 children).
  */
-PokemonNode *removeNodeBST(PokemonNode *root, int id);//Loading.........................................................part 2 - 3
+PokemonNode *removeNodeBST(PokemonNode *root, int id);//DONE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>part 2 - 3
 
 /**
  * @brief Combine BFS search + BST removal to remove Pokemon by ID.
@@ -206,10 +206,9 @@ PokemonNode *removeNodeBST(PokemonNode *root, int id);//Loading.................
  * @return updated BST root
  * Why we made it: BFS confirms existence, then removeNodeBST does the removal.
  */
-PokemonNode *removePokemonByID(PokemonNode *root, int id);//Loading.....................................................part 2 - 3
+PokemonNode *removePokemonByID(PokemonNode *root, int id);//DONE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>part 2 - 3
 //
 PokemonNode *findMin(PokemonNode* root);//DONE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>part 2 - 3
-PokemonNode *findParent(PokemonNode* root, int id);//DONE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>part 2 - 3
 /* ------------------------------------------------------------
    4) Generic BST Traversals (Function Pointers)
    ------------------------------------------------------------ */
@@ -314,7 +313,7 @@ void displayAlphabetical(PokemonNode *root);//Loading...........................
  * @param root BST root
  * Why we made it: Quick listing in BFS order.
  */
-void displayBFS(PokemonNode *root);//Loading............................................................................part 2 - 2
+void displayBFS(PokemonNode *root);//DONE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>part 2 - 2
 
 /**
  * @brief Pre-order user-friendly display (Root->Left->Right).
@@ -346,28 +345,28 @@ void postOrderTraversal(PokemonNode *root);//DONE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
  * @param owner pointer to the Owner
  * Why we made it: Fun demonstration of BFS and custom formula for battles.
  */
-void pokemonFight(OwnerNode *owner);//Loading...........................................................................part 2 - 4
+void pokemonFight(OwnerNode *owner);//DONE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>part 2 - 4
 
 /**
  * @brief Evolve a Pokemon (ID -> ID+1) if allowed.
  * @param owner pointer to the Owner
  * Why we made it: Demonstrates removing an old ID, inserting the next ID.
  */
-void evolvePokemon(OwnerNode *owner);
+void evolvePokemon(OwnerNode *owner);//Loading..........................................................................part 2 - 5
 
 /**
  * @brief Prompt for an ID, BFS-check duplicates, then insert into BST.
  * @param owner pointer to the Owner
  * Why we made it: Primary user function for adding new Pokemon to an owner’s Pokedex.
  */
-void addPokemon(OwnerNode *owner);//LOADING.............................................................................part 2 - 1
+void addPokemon(OwnerNode *owner);//DONE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>part 2 - 1
 
 /**
  * @brief Prompt for ID, remove that Pokemon from BST by ID.
  * @param owner pointer to the Owner
  * Why we made it: Another user function for releasing a Pokemon.
  */
-void freePokemon(OwnerNode *owner);//Loading............................................................................part 2 - 3
+void freePokemon(OwnerNode *owner);//DONE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>part 2 - 3
 
 /* ------------------------------------------------------------
    7) Display Menu for a Pokedex
