@@ -159,14 +159,14 @@ void freePokemonNode(PokemonNode *node);//DONE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
  * @param root BST root
  * Why we made it: Clearing a user’s entire Pokedex means freeing a tree.
  */
-void freePokemonTree(PokemonNode *root);
+void freePokemonTree(PokemonNode *root);//DONE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>part 3
 
 /**
  * @brief Free an OwnerNode (including name and entire Pokedex BST).
  * @param owner pointer to the owner
  * Why we made it: Deleting an owner also frees their Pokedex & name.
  */
-void freeOwnerNode(OwnerNode *owner);
+void freeOwnerNode(OwnerNode *owner);//DONE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>part 3
 //
 /* ------------------------------------------------------------
    3) BST Insert, Search, Remove
@@ -352,7 +352,7 @@ void pokemonFight(OwnerNode *owner);//DONE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
  * @param owner pointer to the Owner
  * Why we made it: Demonstrates removing an old ID, inserting the next ID.
  */
-void evolvePokemon(OwnerNode *owner);//Loading..........................................................................part 2 - 5
+void evolvePokemon(OwnerNode *owner);//DONE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>part 2 - 5
 
 /**
  * @brief Prompt for an ID, BFS-check duplicates, then insert into BST.
@@ -421,7 +421,7 @@ void removeOwnerFromCircularList(OwnerNode *target);
  * @return pointer to the matching OwnerNode or NULL
  * Why we made it: We often need to locate an owner quickly.
  */
-OwnerNode *findOwnerByName(const char *name);
+OwnerNode *findOwnerByName(const char *name);//Loading..................................................................part 4
 
 /* ------------------------------------------------------------
    10) Owner Menus
@@ -443,13 +443,13 @@ void openPokedexMenu();//DONE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
  * @brief Delete an entire Pokedex (owner) from the list.
  * Why we made it: Let user pick which Pokedex to remove and free everything.
  */
-void deletePokedex(void);
+void deletePokedex(void);//DONE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>part 3
 
 /**
  * @brief Merge the second owner's Pokedex into the first, then remove the second owner.
  * Why we made it: BFS copy demonstration plus removing an owner.
  */
-void mergePokedexMenu(void);
+void mergePokedexMenu(void);//Loading...................................................................................part 4
 
 /* ------------------------------------------------------------
    11) Printing Owners in a Circle
