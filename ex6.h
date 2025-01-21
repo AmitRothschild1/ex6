@@ -255,8 +255,6 @@ void postOrderGeneric(PokemonNode *root, VisitNodeFunc visit);//DONE>>>>>>>>>>>>
  * Why we made it: We can pass this to BFSGeneric or others to quickly print.
  */
 void printPokemonNode(PokemonNode *node);//DONE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>part 2 - 2
-//
-void alphabeticalGeneric(PokemonNode *root, VisitNodeFunc visit);//Loading..............................................part 2 - 2
 /* ------------------------------------------------------------
    5) Display Methods (BFS, Pre, In, Post, Alphabetical)
    ------------------------------------------------------------ */
@@ -274,7 +272,7 @@ typedef struct
  * @param cap initial capacity
  * Why we made it: We store pointers to PokemonNodes for alphabetical sorting.
  */
-void initNodeArray(NodeArray *na, int cap);
+void initNodeArray(NodeArray *na, int cap);//DONE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>part 2 - 2
 
 /**
  * @brief Add a PokemonNode pointer to NodeArray, realloc if needed.
@@ -282,7 +280,7 @@ void initNodeArray(NodeArray *na, int cap);
  * @param node pointer to the node
  * Why we made it: We want a dynamic list of BST nodes for sorting.
  */
-void addNode(NodeArray *na, PokemonNode *node);
+void addNode(NodeArray *na, PokemonNode *node);//DONE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>part 2 - 2
 
 /**
  * @brief Recursively collect all nodes from the BST into a NodeArray.
@@ -290,7 +288,7 @@ void addNode(NodeArray *na, PokemonNode *node);
  * @param na pointer to NodeArray
  * Why we made it: We gather everything for qsort.
  */
-void collectAll(PokemonNode *root, NodeArray *na);
+void collectAll(PokemonNode *root, NodeArray *na);//DONE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>part 2 - 2
 
 /**
  * @brief Compare function for qsort (alphabetical by node->data->name).
@@ -299,14 +297,14 @@ void collectAll(PokemonNode *root, NodeArray *na);
  * @return -1, 0, or +1
  * Why we made it: Sorting by name for alphabetical display.
  */
-int compareByNameNode(const void *a, const void *b);
+int compareByNameNode(const void *a, const void *b);//DONE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>part 2 - 2
 
 /**
  * @brief BFS is nice, but alphabetical means we gather all nodes, sort by name, then print.
  * @param root BST root
  * Why we made it: Provide user the option to see Pokemon sorted by name.
  */
-void displayAlphabetical(PokemonNode *root);//Loading...................................................................part 2 - 2
+void displayAlphabetical(PokemonNode *root);//DONE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>part 2 - 2
 
 /**
  * @brief BFS user-friendly display (level-order).
@@ -377,7 +375,7 @@ void freePokemon(OwnerNode *owner);//DONE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
  * @param owner pointer to Owner
  * Why we made it: We want a simple menu that picks from various traversals.
  */
-void displayMenu(OwnerNode *owner);//Loading............................................................................part 2 - 2
+void displayMenu(OwnerNode *owner);//DONE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>part 2 - 2
 
 /* ------------------------------------------------------------
    8) Sorting Owners (Bubble Sort on Circular List)
@@ -387,7 +385,7 @@ void displayMenu(OwnerNode *owner);//Loading....................................
  * @brief Sort the circular owners list by name.
  * Why we made it: Another demonstration of pointer manipulation + sorting logic.
  */
-void sortOwners(void);
+void sortOwners(void);//Loading.........................................................................................part 5
 
 /**
  * @brief Helper to swap name & pokedexRoot in two OwnerNode.
@@ -395,7 +393,7 @@ void sortOwners(void);
  * @param b pointer to second owner
  * Why we made it: Used internally by bubble sort to swap data.
  */
-void swapOwnerData(OwnerNode *a, OwnerNode *b);
+void swapOwnerData(OwnerNode *a, OwnerNode *b);//Loading................................................................part 5
 
 /* ------------------------------------------------------------
    9) Circular List Linking & Searching
@@ -431,7 +429,7 @@ OwnerNode *findOwnerByName(const char *name);//Loading..........................
  * @brief Let user pick an existing Pokedex (owner) by number, then sub-menu.
  * Why we made it: This is the main interface for adding/fighting/evolving, etc.
  */
-void enterExistingPokedexMenu(void);//Loading...........................................................................
+void enterExistingPokedexMenu(void);//DONE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>part 2
 
 /**
  * @brief Creates a new Pokedex (prompt for name, check uniqueness, choose starter).

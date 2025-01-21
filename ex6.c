@@ -14,11 +14,9 @@
 //   OwnerNode* ownerHead;
 //   const PokemonData pokedex[];
 // ================================================
-
 // --------------------------------------------------------------
 // 1) Safe integer reading
 // --------------------------------------------------------------
-
 void trimWhitespace(char *str)
 {
     // Remove leading spaces/tabs/\r
@@ -41,7 +39,6 @@ void trimWhitespace(char *str)
         str[--len] = '\0';
     }
 }
-
 char *myStrdup(const char *src)
 {
     if (!src)
@@ -56,7 +53,6 @@ char *myStrdup(const char *src)
     strcpy(dest, src);
     return dest;
 }
-
 int readIntSafe(const char *prompt)
 {
     char buffer[INT_BUFFER];
@@ -108,7 +104,6 @@ int readIntSafe(const char *prompt)
     }
     return value;
 }
-
 // --------------------------------------------------------------
 // 2) Utility: Get type name from enum
 // --------------------------------------------------------------
@@ -150,7 +145,6 @@ const char *getTypeName(PokemonType type)
         return "UNKNOWN";
     }
 }
-
 // --------------------------------------------------------------
 // Utility: getDynamicInput (for reading a line into malloc'd memory)
 // --------------------------------------------------------------
@@ -189,7 +183,6 @@ char *getDynamicInput()
 
     return input;
 }
-
 // Function to print a single Pokemon node
 void printPokemonNode(PokemonNode *node)
 {
@@ -202,7 +195,8 @@ void printPokemonNode(PokemonNode *node)
            node->data->hp,
            node->data->attack,
            (node->data->CAN_EVOLVE == CAN_EVOLVE) ? "Yes" : "No");
-}/* ------------------------------------------------------------
+}
+/* ------------------------------------------------------------
    QUEUE FUNCTIONS
    ------------------------------------------------------------ */
 PokemonQueue* createQueue()
@@ -299,28 +293,6 @@ void inOrderGeneric(PokemonNode *root, VisitNodeFunc visit)
     visit(root);
     preOrderGeneric(root->right, visit);
 }
-//
-/*
-PokemonQueue *alphabeticalGeneric(PokemonNode *root, VisitNodeFunc visit)
-{
-    if (root == NULL) return;
-    PokemonQueue* q = createQueue();
-    enqueue(q, root);
-    while (!isEmpty(q))
-    {
-        PokemonNode* currentNode = dequeue(q);
-        if (currentNode->left != NULL)
-        {
-            enqueue(q, currentNode->left);
-        }
-        if (currentNode->right != NULL)
-        {
-            enqueue(q, currentNode->right);
-        }
-    }
-    free(q);
-}
-*/
 // --------------------------------------------------------------
 // PART ONE
 // --------------------------------------------------------------
@@ -530,23 +502,82 @@ void postOrderTraversal(PokemonNode *root)
 //
 void displayAlphabetical(PokemonNode *root)
 {
-    if (root == NULL) return;
-    PokemonQueue* q = createQueue();
-    enqueue(q, root);
-    while (!isEmpty(q))
+    if (!root)
     {
-        PokemonNode* currentNode = dequeue(q);
-        //visit(currentNode);
-        if (currentNode->left != NULL)
+        printf("No Pokemon to display.\n");
+        return;
+    }
+    NodeArray na;
+    initNodeArray(&na, 10);
+
+    collectAll(root, &na);
+
+    qsort(na.nodes, na.size, sizeof(PokemonNode *), compareByNameNode);
+
+    // הדפסת הצמתים במערך
+    printf("Pokemon (Alphabetical Order):\n");
+    for (int i = 0; i < na.size; i++)
+    {
+        printPokemonNode(na.nodes[i]);
+    }
+
+    // שחרור זיכרון של המערך
+    free(na.nodes);
+}
+int compareByNameNode(const void *a, const void *b)
+{
+    const PokemonNode *nodeA = *(const PokemonNode **)a;
+    const PokemonNode *nodeB = *(const PokemonNode **)b;
+
+    return strcmp(nodeA->data->name, nodeB->data->name);
+}
+//
+void collectAll(PokemonNode *root, NodeArray *na)
+{
+    if (!root || !na) return;
+    collectAll(root->left, na);
+    addNode(na, root);
+    collectAll(root->right, na);
+}
+//
+void initNodeArray(NodeArray *na, int cap)
+{
+    if (!na || cap <= 0)return;
+
+    na->nodes = (PokemonNode **)malloc(cap * sizeof(PokemonNode *));
+    if (!na->nodes)
+    {
+        printf("Memory allocation failed for NodeArray.\n");
+        na->size = 0;
+        na->capacity = 0;
+        return;
+    }
+
+    na->size = 0;
+    na->capacity = cap;
+}
+//
+void addNode(NodeArray *na, PokemonNode *node)
+{
+    if (!na || !node)
+    {
+        printf("Invalid parameters for adding a node.\n");
+        return;
+    }
+
+    if (na->size == na->capacity)
+    {
+        na->capacity *= 2;
+        na->nodes = (PokemonNode **)realloc(na->nodes, na->capacity * sizeof(PokemonNode *));
+        if (!na->nodes)
         {
-            enqueue(q, currentNode->left);
-        }
-        if (currentNode->right != NULL)
-        {
-            enqueue(q, currentNode->right);
+            printf("Memory allocation failed during resize.\n");
+            na->size = 0;
+            na->capacity = 0;
+            return;
         }
     }
-    free(q);
+    na->nodes[na->size++] = node;
 }
 // --------------------------------------------------------------
 // 3) RELEASE POKEMON BY ID
@@ -692,7 +723,7 @@ void pokemonFight(OwnerNode *owner)
     printf("Pokemon 2: %s (Score = %.2f)\n",fighter2->data->name,power2);
     if (power1 > power2) printf("%s wins!\n" ,fighter1->data->name);
     if (power1 < power2) printf("%s wins!\n" ,fighter2->data->name);
-    if (power1 == power2) printf("It’s a tie!\n");
+    if (power1 == power2) printf("It's a tie!\n");
 }
 // --------------------------------------------------------------
 // 5) EVOLVE POKEMON
@@ -802,16 +833,20 @@ void mergePokedexMenu(void)
         printf("Not enough owners to merge.\n");
         return;
     }
-   printf("=== Merge Pokedexes ===\n");
-    char *name1 = getDynamicInput("Enter name of first owner: ");
-    char *name2 = getDynamicInput("Enter name of second owner: ");
-    PokemonNode *first = findOwnerByName(name1);
-    PokemonNode *second = findOwnerByName(name2);
-    if (first == NULL || second == NULL)
+    printf("=== Merge Pokedexes ===\n");
+    //char *name1 = getDynamicInput("Enter name of first owner: ");
+    //char *name2 = getDynamicInput("Enter name of second owner: ");
+   // PokemonNode *first = findOwnerByName(name1);
+   // PokemonNode *second = findOwnerByName(name2);
+    //if (first == NULL || second == NULL)
     {
         printf("Names have not been found.\n");
-        return;
     }
+    //else
+    {
+
+    }
+
 
 }
 //
@@ -827,6 +862,62 @@ OwnerNode *findOwnerByName(const char *name)
     freeOwnerNode(temp);
     return NULL;
 }
+void mergeNode(PokemonNode *root1, PokemonNode *root2)
+{
+    if (root1 == NULL || root2 == NULL) return;
+    searchPokemonBFS(root2,root2->data->id);
+
+}
+// --------------------------------------------------------------
+// PART FIVE
+// --------------------------------------------------------------
+void sortOwners()
+{
+    if (!ownerHead || ownerHead->next == ownerHead)
+    {
+        return;
+    }
+
+    int swapped;
+    OwnerNode *current;
+    OwnerNode *lastSorted = NULL;
+
+    do
+    {
+        swapped = 0;
+        current = ownerHead;
+
+        while (current->next != lastSorted && current->next != ownerHead)
+        {
+            if (strcmp(current->ownerName, current->next->ownerName) > 0)
+            {
+                swapOwnerData(current, current->next);
+                swapped = 1;
+            }
+            current = current->next;
+        }
+        lastSorted = current;
+    }
+    while (swapped);
+    printf("Owners sorted by name.\n");
+}
+//
+void swapOwnerData(OwnerNode *a, OwnerNode *b)
+{
+    if (!a || !b) return;
+
+    char *tempName = a->ownerName;
+    a->ownerName = b->ownerName;
+    b->ownerName = tempName;
+
+    struct PokemonNode *tempPokedex = a->pokedexRoot;
+    a->pokedexRoot = b->pokedexRoot;
+    b->pokedexRoot = tempPokedex;
+}
+// --------------------------------------------------------------
+// PART SIX
+// --------------------------------------------------------------
+
 // --------------------------------------------------------------
 // Display Menu
 // --------------------------------------------------------------
@@ -862,7 +953,7 @@ void displayMenu(OwnerNode *owner)
         postOrderTraversal(owner->pokedexRoot);
         break;
     case 5:
-        //displayAlphabetical(owner->pokedexRoot);
+        displayAlphabetical(owner->pokedexRoot);
         break;
     default:
         printf("Invalid choice.\n");
@@ -964,7 +1055,7 @@ void mainMenu()
           //  mergePokedexMenu();
             break;
         case 5:
-           // sortOwners();
+            sortOwners();
             break;
         case 6:
           //  printOwnersCircular();
