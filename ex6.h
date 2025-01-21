@@ -385,7 +385,7 @@ void displayMenu(OwnerNode *owner);//DONE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
  * @brief Sort the circular owners list by name.
  * Why we made it: Another demonstration of pointer manipulation + sorting logic.
  */
-void sortOwners(void);//Loading.........................................................................................part 5
+void sortOwners(void);//DONE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>part 5
 
 /**
  * @brief Helper to swap name & pokedexRoot in two OwnerNode.
@@ -393,25 +393,25 @@ void sortOwners(void);//Loading.................................................
  * @param b pointer to second owner
  * Why we made it: Used internally by bubble sort to swap data.
  */
-void swapOwnerData(OwnerNode *a, OwnerNode *b);//Loading................................................................part 5
+void swapOwnerData(OwnerNode *a, OwnerNode *b);//DONE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>part 5
 
 /* ------------------------------------------------------------
    9) Circular List Linking & Searching
    ------------------------------------------------------------ */
-
+void copyPokedex(PokemonNode *root, PokemonNode **targetRoot);
 /**
  * @brief Insert a new owner into the circular list. If none exist, it's alone.
  * @param newOwner pointer to newly created OwnerNode
  * Why we made it: We need a standard approach to keep the list circular.
  */
-void linkOwnerInCircularList(OwnerNode *newOwner);
+void linkOwnerInCircularList(OwnerNode *newOwner);//Loading.............................................................part 6
 
 /**
  * @brief Remove a specific OwnerNode from the circular list, possibly updating head.
  * @param target pointer to the OwnerNode
  * Why we made it: Deleting or merging owners requires removing them from the ring.
  */
-void removeOwnerFromCircularList(OwnerNode *target);
+void removeOwnerFromCircularList(OwnerNode *target);//Loading...........................................................part 6
 
 /**
  * @brief Find an owner by name in the circular list.
@@ -457,7 +457,7 @@ void mergePokedexMenu(void);//Loading...........................................
  * @brief Print owners left or right from head, repeating as many times as user wants.
  * Why we made it: Demonstrates stepping through a circular list in a chosen direction.
  */
-void printOwnersCircular(void);
+void printOwnersCircular(void);//Loading................................................................................part 6
 
 /* ------------------------------------------------------------
    12) Cleanup All Owners at Program End
@@ -467,7 +467,7 @@ void printOwnersCircular(void);
  * @brief Frees every remaining owner in the circular list, setting ownerHead = NULL.
  * Why we made it: Ensures a squeaky-clean exit with no leftover memory.
  */
-void freeAllOwners(void);
+void freeAllOwners(void);//Loading......................................................................................part 6
 
 /* ------------------------------------------------------------
    13) The Main Menu
