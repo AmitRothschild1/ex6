@@ -87,7 +87,7 @@ PokemonNode* dequeue(PokemonQueue* q);
 /* ------------------------------------------------------------
    1) Safe Input + Utility
    ------------------------------------------------------------ */
-
+int isNameExist(char *ownerName);
 /**
  * @brief Remove leading/trailing whitespace (including '\r').
  * @param str modifiable string
