@@ -1037,7 +1037,7 @@ PokemonNode *removePokemonByID1(PokemonNode *root, int id)
 // --------------------------------------------------------------
 void pokemonFight(OwnerNode *owner) {
     if (!owner || !owner->pokedexRoot) {
-        printf("Pokedex is empty or invalid owner.\n");
+        printf("Pokedex is empty.\n");
         return;
     }
 
@@ -1104,7 +1104,7 @@ void pokemonFight1(OwnerNode *owner)
 // --------------------------------------------------------------
 void evolvePokemon(OwnerNode *owner) {
     if (!owner || !owner->pokedexRoot) {
-        printf("Cannot evolve. Pokedex is empty or invalid owner.\n");
+        printf("Cannot evolve. Pokedex empty.\n");
         return;
     }
 
@@ -1210,11 +1210,11 @@ void evolvePokemon1(OwnerNode *owner)
 // --------------------------------------------------------------
 void deletePokedex() {
     if (!ownerHead) {
-        printf("No Pokedexes to delete.\n");
+        printf("No existing Pokedexes to delete.\n");
         return;
     }
 
-    printf("\nExisting Pokedexes:\n");
+    printf("\n=== Delete a Pokedex ===\n");
     OwnerNode *temp = ownerHead;
     int index = 1;
 
@@ -1234,48 +1234,13 @@ void deletePokedex() {
         temp = temp->next;
     }
 
-    printf("Deleting %s's Pokedex...\n", temp->ownerName);
+    printf("Deleting %s's entire Pokedex...\n", temp->ownerName);
     removeOwnerFromCircularList(temp);
 
     printf("Pokedex deleted.\n");
 }
 
-void deletePokedex1()
-{
-    if(ownerHead == NULL)
-    {
-        printf("No existing Pokedexes to delete.\n");
-        return;
-    }
-    printf("\n=== Delete a Pokedex ===\n");
-    OwnerNode *temp = ownerHead;
-    int ownerPlace = 0;
-    ownerPlace++;
-    printf("%d. %s\n",ownerPlace,temp->ownerName);
-    temp = temp->next;
-    while (temp != ownerHead)
-    {
-        ownerPlace++;
-        printf("%d. %s\n",ownerPlace,temp->ownerName);
-        temp = temp->next;
-    }
-    temp = ownerHead;
-    int ownerNum = readIntSafe("Choose a Pokedex to delete by number: ");
-    for (int i = 1; i < ownerNum; i++)
-    {
-        temp = ownerHead->next;
-    }
-    if (temp == NULL)//NOT NULL ANYMORE
-    {
-        printf("Invalid number.\n");
-    }
-    else
-    {
-        printf("Deleting %s's entire Pokedex...\n",temp->ownerName);
-        freeOwnerNode(temp);
-        printf("Pokedex deleted.\n");
-    }
-}
+
 //
 void freeOwnerNode(OwnerNode *owner) {
     if (!owner) return;
@@ -1309,7 +1274,7 @@ void mergePokedexMenu() {
         printf("Not enough owners to merge.\n");
         return;
     }
-
+    printf("\n=== Merge Pokedexes ===\n");
     printf("Enter name of first owner: ");
     char *name1 = getDynamicInput();
     printf("Enter name of second owner: ");
@@ -1325,85 +1290,18 @@ void mergePokedexMenu() {
         return;
     }
 
-    printf("Merging Pokedex of %s into %s...\n", name2, name1);
-
-    copyPokedex(second->pokedexRoot, &first->pokedexRoot);
-    removeOwnerFromCircularList(second);
-
-    free(name1);
-    free(name2);
-
-    printf("Merge completed.\n");
-}
-
-void mergePokedexMenu1() {
-    if (!ownerHead || ownerHead->next == ownerHead) {
-        printf("Not enough owners to merge.\n");
-        return;
-    }
-
-    printf("Enter name of first owner: ");
-    char *name1 = getDynamicInput();
-    printf("Enter name of second owner: ");
-    char *name2 = getDynamicInput();
-
-    if (!name1 || !name2) {
-        free(name1);
-        free(name2);
-        return;
-    }
-
-    OwnerNode *owner1 = findOwnerByName(name1);
-    OwnerNode *owner2 = findOwnerByName(name2);
-
-    if (!owner1 || !owner2) {
-        printf("One or both owners not found.\n");
-        free(name1);
-        free(name2);
-        return;
-    }
-
-    printf("Merging Pokedexes of %s and %s...\n", name1, name2);
-    copyPokedex(owner2->pokedexRoot, &owner1->pokedexRoot);
-    removeOwnerFromCircularList(owner2);
-
-    free(name1);
-    free(name2);
-
-    printf("Merge completed successfully.\n");
-}
-
-void mergePokedexMenu0()
-{
-    if (ownerHead == NULL)
-    {
-        printf("Not enough owners to merge.\n");
-        return;
-    }
-    printf("\n=== Merge Pokedexes ===\n");
-    printf("Enter name of first owner: ");
-    char *name1 = getDynamicInput();
-    printf("Enter name of second owner: ");
-    char *name2 = getDynamicInput();
-    OwnerNode *first = findOwnerByName(name1);
-    OwnerNode *second = findOwnerByName(name2);
-    if (first == NULL || second == NULL)
-    {
-        printf("Names have not been found.\n");
-        free(name1);//.................................................................
-        //freeOwnerNode(first);//
-        free(name2);//
-        //freeOwnerNode(second);//
-        return;
-    }
     printf("Merging %s and %s...\n", name1, name2);
+
     copyPokedex(second->pokedexRoot, &first->pokedexRoot);
     removeOwnerFromCircularList(second);
+
     printf("Merge completed.\n");
     printf("Owner '%s' has been removed after merging.\n",name2);
+
     free(name1);
     free(name2);
 }
+
 //
 OwnerNode *findOwnerByName(const char *name)
 {
@@ -1602,33 +1500,6 @@ void removeOwnerFromCircularList(OwnerNode *target) {
     free(target);
 }
 
-void removeOwnerFromCircularList1(OwnerNode *target)
-{
-    if (!ownerHead || !target) {
-        return;
-    }
-
-    // מקרה: רשימה עם צומת יחיד
-    if (ownerHead == target && ownerHead->next == ownerHead) {
-        free(target->ownerName);
-        free(target);
-        ownerHead = NULL;
-        return;
-    }
-
-    // עדכון קישורים
-    target->prev->next = target->next;
-    target->next->prev = target->prev;
-
-    // עדכון ראש הרשימה אם יש צורך
-    if (ownerHead == target) {
-        ownerHead = target->next;
-    }
-
-    // שחרור זיכרון
-    free(target->ownerName);
-    free(target);
-}
 // --------------------------------------------------------------
 // PART SEVEN
 // --------------------------------------------------------------
@@ -1644,21 +1515,6 @@ void freeAllOwners() {
     } while (current != ownerHead);
 
     ownerHead = NULL; // הסימון שהרשימה ריקה
-}
-
-
-void freeAllOwners1() {
-    if (!ownerHead) return; // אם הרשימה ריקה, אין מה למחוק
-
-    OwnerNode* current = ownerHead;
-    while (current->next != ownerHead) {
-        OwnerNode* temp = current->next;
-        freeOwnerNode(current); // משחרר את הצומת הנוכחי
-        current = temp; // ממשיכים לצומת הבא
-    }
-
-    freeOwnerNode(current); // משחרר את הצומת האחרון
-    ownerHead = NULL; // מסמנים שהרשימה ריקה
 }
 
 // --------------------------------------------------------------
