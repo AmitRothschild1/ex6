@@ -1,3 +1,4 @@
+
 #ifndef EX6_H
 #define EX6_H
 
@@ -77,6 +78,8 @@ typedef struct PokemonQueue
 /* ------------------------------------------------------------
    QUEUE FUNCTIONS
    ------------------------------------------------------------ */
+void freeQueue(PokemonQueue *q);//...................................................................
+
 PokemonQueue* createQueue();
 //
 int isEmpty(PokemonQueue* q);
@@ -168,6 +171,8 @@ void freePokemonTree(PokemonNode *root);//DONE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
  */
 void freeOwnerNode(OwnerNode *owner);//DONE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>part 3
 //
+void freePokedex(PokemonNode *root);
+void clearOwnerPokedex(OwnerNode *owner);
 /* ------------------------------------------------------------
    3) BST Insert, Search, Remove
    ------------------------------------------------------------ */
